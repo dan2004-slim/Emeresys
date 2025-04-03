@@ -29,12 +29,14 @@ public class UserController {
         this.userRepository = userRepository;
     }
     
-    
+    //gets all users
    @GetMapping
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
     
+    
+    //getting a user by Id but also added logging
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id){
         
@@ -51,12 +53,36 @@ public class UserController {
             });
     }
     
+    //Getting a user by username
     @GetMapping("/by-username/{username}")
     public Optional<User> getUserByUsername(@PathVariable String username){
         return userService.getUserByUsername(username);
         
     }
     
+    //Allows for updating users
+    @PutMapping("/{id}")
+public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+    return userRepository.findById(id)
+        .map(existingUser -> {
+            if (updatedUser.getUsername() != null) {
+                existingUser.setUsername(updatedUser.getUsername());
+            }
+            if (updatedUser.getPassword() != null) {
+                existingUser.setPassword(updatedUser.getPassword());
+            }
+            if (updatedUser.getRole() != null) {
+                existingUser.setRole(updatedUser.getRole());
+            }
+
+            User savedUser = userRepository.save(existingUser);  // Fixed typo
+            return ResponseEntity.ok(savedUser);
+        })
+        .orElseGet(() -> ResponseEntity.notFound().build());
+}
+
+    
+    //Adding a user
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user){
         if(user.getUsername() == null || user.getPassword() == null || user.getRole() == null){
