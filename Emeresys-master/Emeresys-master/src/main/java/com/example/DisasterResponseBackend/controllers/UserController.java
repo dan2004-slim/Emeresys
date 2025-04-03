@@ -93,4 +93,22 @@ public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User upd
         return ResponseEntity.ok(savedUser);
     }
     
+    // Deleting a user
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id){
+        return userRepository.findById(id)
+                .map(user -> { 
+                    System.out.println("User found" +user.getUsername());
+                    System.out.println("Deleting user:"+id);
+                    userRepository.delete(user);
+                    System.out.println("User with id"+id+"deleted successfully");
+                    return ResponseEntity.ok("User with ID" +id+ " deleted successfully.");
+                })
+                .orElseGet(()->{
+                   System.out.println("User not found for ID:"+id);
+                   return ResponseEntity.notFound().build();
+                });
+                
+    }
+    
 }
