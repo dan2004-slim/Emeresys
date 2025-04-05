@@ -17,7 +17,7 @@ alertId INT PRIMARY KEY auto_increment,
 alertType enum('flood','fire','other') NOT NULL,
 alertDetails TEXT NOT NULL,
 locationId INT,
-phoneNo INT,
+phoneNo VARCHAR(10) NOT NULL,
 Description VARCHAR(100),
 FOREIGN KEY(locationId) references Location(locationId) ON DELETE cascade 
 );
