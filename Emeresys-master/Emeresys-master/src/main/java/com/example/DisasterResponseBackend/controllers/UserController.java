@@ -111,7 +111,28 @@ public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User upd
                    System.out.println("User not found for ID:"+id);
                    return ResponseEntity.notFound().build();
                 });
-                
+                           
     }
+    
+    
+    //Deleting Users using email
+    @DeleteMapping("/by-email/{email}")
+    public ResponseEntity<?> deleteUserByEmail(@PathVariable String email){
+        return userRepository.findByEmail(email)
+                .map(user -> {
+                    System.out.println("User found: " + user.getUsername());
+                    System.out.println("Deleting User with email: "+email);
+                    userRepository.delete(user);
+                    System.out.println("User with email: "+email+ " deleted successfully: ");
+                    return ResponseEntity.ok("User with email"+email+"deleted successfully");
+                    
+                })
+                .orElseGet(()->{
+                    System.out.println("User not found for email: "+email);
+                    return ResponseEntity.notFound().build();
+                });
+        
+    }
+    
     
 }
