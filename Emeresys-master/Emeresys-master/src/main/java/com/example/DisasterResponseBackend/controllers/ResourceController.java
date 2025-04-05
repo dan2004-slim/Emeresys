@@ -73,6 +73,23 @@ public class ResourceController {
         return ResponseEntity.ok(savedResource);
     }
     
+    //Deleting a resource by its id
+    @DeleteMapping("/{resourceId}")
+    public ResponseEntity<?> deleteResource(@PathVariable Long resourceId){
+        System.out.println("Deleting resource with id: " +resourceId);
+        
+        return resourceRepository.findById(resourceId)
+                .map(resource -> {
+                    resourceRepository.delete(resource);
+                    System.out.println("Resource deleted successfully");
+                    return ResponseEntity.ok("Resource deleted successfully");
+                })
+                .orElseGet(()->{
+                    System.out.println("Resource not found for id" +resourceId);
+                    return ResponseEntity.notFound().build();
+                });
+    }
+    
     //global error handler
     // collects  field name and messages from @Valid failures
     //returns a 400 Bad Request with a JSON listing validation error
