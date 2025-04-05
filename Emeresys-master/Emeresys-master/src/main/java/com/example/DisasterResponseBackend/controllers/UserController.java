@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -113,6 +114,24 @@ public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User upd
         }
         User savedUser = userRepository.save(user);
         return ResponseEntity.ok(savedUser);
+    }
+    
+    //The login logic
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> credentials){
+        String identifier = credentials.get("identifier"); // can either be email or username
+        String password = credentials.get("password");
+        
+        Optional<User> user = userRepository.findByUsername(identifier)
+                .or(()-> userRepository.findByEmail(identifier));
+        
+        if (user.isPresent() && user.get().getPassword().equals(password)){
+            System.out.println("Login Successful for user: " +user.get().getUsername());
+            return ResponseEntity.ok("Login Successful");
+        }else{
+            System.out.println("Invalid username or password for user: " +identifier);
+            return ResponseEntity.status(401).body("Invalid username or password.");
+        }
     }
     
     // Deleting a user
