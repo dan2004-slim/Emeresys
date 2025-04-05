@@ -60,6 +60,25 @@ public class UserController {
         
     }
     
+    //Getting a user by email
+    @GetMapping("/by-email/{email}")
+    public ResponseEntity<?> getUserByEmail(@PathVariable String email){
+        
+        if (email == null|| email.trim().isEmpty()){
+         return ResponseEntity.badRequest().body("Email is required.");
+        }
+        return userRepository.findByEmail(email)
+                .map(user ->{
+                    System.out.println("User found with email: " +email);
+                    return ResponseEntity.ok(user);
+                })
+                .orElseGet(()->{
+                    System.out.println("User not found for email: " +email);
+                    return ResponseEntity.notFound().build();
+                });
+        
+    }
+    
     //Allows for updating users
     @PutMapping("/{id}")
 public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
