@@ -74,6 +74,9 @@ public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User upd
             if (updatedUser.getRole() != null) {
                 existingUser.setRole(updatedUser.getRole());
             }
+             if (updatedUser.getEmail() != null) {
+                existingUser.setEmail(updatedUser.getEmail());
+            }
 
             User savedUser = userRepository.save(existingUser);  // Fixed typo
             return ResponseEntity.ok(savedUser);
@@ -85,8 +88,8 @@ public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User upd
     //Adding a user
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user){
-        if(user.getUsername() == null || user.getPassword() == null || user.getRole() == null){
-            return ResponseEntity.badRequest().body("All fields are required: Username, password and role.");
+        if(user.getUsername() == null || user.getPassword() == null || user.getRole() == null || user.getEmail() == null){
+            return ResponseEntity.badRequest().body("All fields are required: Username, password , role and email.");
             
         }
         User savedUser = userRepository.save(user);
