@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -127,7 +128,14 @@ public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User upd
         
         if (user.isPresent() && user.get().getPassword().equals(password)){
             System.out.println("Login Successful for user: " +user.get().getUsername());
-            return ResponseEntity.ok("Login Successful");
+            
+            //including users role in the response
+            String role = user.get().getRole();
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Login Successful");
+            response.put("role", role);
+            
+            return ResponseEntity.ok(response);
         }else{
             System.out.println("Invalid username or password for user: " +identifier);
             return ResponseEntity.status(401).body("Invalid username or password.");
