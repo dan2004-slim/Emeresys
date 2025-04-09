@@ -6,7 +6,8 @@ package com.emeresys.emeresysfrontend;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.CardLayout;
-
+import org.openstreetmap.gui.jmapviewer.*;
+import org.jfree.chart.ChartPanel;
 /**
  *
  * @author USER
@@ -14,11 +15,14 @@ import java.awt.CardLayout;
 public class UserDashboard extends javax.swing.JFrame {
 
     private NewsTicker newsTicker;
+    
     /**
      * Creates new form UserDashboard
      */
     public UserDashboard() {
         initComponents();
+        setupChatClientGUI();
+        setupMapView();
         setSize(800,600);
         setLocationRelativeTo(null);
         
@@ -74,7 +78,7 @@ public class UserDashboard extends javax.swing.JFrame {
                 
             }else{
             expandAlertsPanel();
-            setupAlertsScrollPane();
+            //setupAlertsScrollPane();
             isPanelExpanded = true;
             }
         });
@@ -148,7 +152,7 @@ public class UserDashboard extends javax.swing.JFrame {
             isPanelExpanded = false;
         }else{
             expandAlertsPanel();
-            setupAlertsScrollPane();
+            //setupAlertsScrollPane();
             isPanelExpanded = true;
         }
                 
@@ -177,12 +181,23 @@ public class UserDashboard extends javax.swing.JFrame {
         alertsPanel.repaint();
         
     }
+       //MapView method
+    public void setupMapView(){
+        JMapViewer mapViewer = MapViewerUtils.initializeMapViewer(12);
+        
+        
+        mapViewTab.setLayout(new java.awt.BorderLayout());
+        mapViewTab.add(mapViewer, java.awt.BorderLayout.CENTER);
+        
+        mapViewTab.revalidate();
+        mapViewTab.repaint();
+    }
     
     
     
     
     //Changin  from ticker to scrollpane
-    private void setupAlertsScrollPane(){
+   /*private void setupAlertsScrollPane(){
         //creating the scrollpane
         JScrollPane alertsScrollPane = new JScrollPane();
         alertsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -207,8 +222,24 @@ public class UserDashboard extends javax.swing.JFrame {
         alertsPanel.repaint();
         
     }
-    
+    */
    
+    
+        private void setupChatClientGUI() {
+    // Create ChatClientGUIv2 instance
+    ChatClientGUIv2 chatClientGUI = new ChatClientGUIv2("Admin");
+
+    // Set the layout of the communications panel if needed
+    commsTab.setLayout(new BorderLayout());
+
+    // Add the ChatClientGUIv2 to the communications panel
+    commsTab.add(chatClientGUI, BorderLayout.CENTER);
+
+    // Revalidate and repaint to ensure the panel displays correctly
+    commsTab.revalidate();
+    commsTab.repaint();
+}
+
     
     
 
@@ -238,12 +269,14 @@ public class UserDashboard extends javax.swing.JFrame {
         btnAlerts = new javax.swing.JButton();
         mapViewTab = new javax.swing.JPanel();
         communityTab = new javax.swing.JPanel();
+        TopNav = new javax.swing.JPanel();
+        SideNav = new javax.swing.JPanel();
+        commsTab = new javax.swing.JPanel();
         resourcesTab = new javax.swing.JPanel();
         settingsTab = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("HomePage");
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
         container.setBackground(new java.awt.Color(255, 255, 255));
         container.setPreferredSize(new java.awt.Dimension(800, 600));
@@ -375,17 +408,50 @@ public class UserDashboard extends javax.swing.JFrame {
         viewPane.add(mapViewTab, "map");
 
         communityTab.setBackground(new java.awt.Color(255, 255, 204));
+        communityTab.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout communityTabLayout = new javax.swing.GroupLayout(communityTab);
-        communityTab.setLayout(communityTabLayout);
-        communityTabLayout.setHorizontalGroup(
-            communityTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        TopNav.setBackground(new java.awt.Color(153, 153, 153));
+
+        javax.swing.GroupLayout TopNavLayout = new javax.swing.GroupLayout(TopNav);
+        TopNav.setLayout(TopNavLayout);
+        TopNavLayout.setHorizontalGroup(
+            TopNavLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 1012, Short.MAX_VALUE)
         );
-        communityTabLayout.setVerticalGroup(
-            communityTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 608, Short.MAX_VALUE)
+        TopNavLayout.setVerticalGroup(
+            TopNavLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        communityTab.add(TopNav, java.awt.BorderLayout.PAGE_START);
+
+        SideNav.setBackground(new java.awt.Color(153, 153, 153));
+
+        javax.swing.GroupLayout SideNavLayout = new javax.swing.GroupLayout(SideNav);
+        SideNav.setLayout(SideNavLayout);
+        SideNavLayout.setHorizontalGroup(
+            SideNavLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        SideNavLayout.setVerticalGroup(
+            SideNavLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 508, Short.MAX_VALUE)
+        );
+
+        communityTab.add(SideNav, java.awt.BorderLayout.LINE_START);
+
+        javax.swing.GroupLayout commsTabLayout = new javax.swing.GroupLayout(commsTab);
+        commsTab.setLayout(commsTabLayout);
+        commsTabLayout.setHorizontalGroup(
+            commsTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 912, Short.MAX_VALUE)
+        );
+        commsTabLayout.setVerticalGroup(
+            commsTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 508, Short.MAX_VALUE)
+        );
+
+        communityTab.add(commsTab, java.awt.BorderLayout.CENTER);
 
         viewPane.add(communityTab, "community");
 
@@ -455,7 +521,11 @@ public class UserDashboard extends javax.swing.JFrame {
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
         // TODO add your handling code here:
         CardLayout cl = (CardLayout) viewPane.getLayout();
+        SettingPanel settingPanel = new SettingPanel();
+        viewPane.add(settingPanel, "settings");
+        
         cl.show(viewPane, "settings");
+        
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     /**
@@ -494,6 +564,8 @@ public class UserDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel SideNav;
+    private javax.swing.JPanel TopNav;
     private javax.swing.JPanel alertsPanel;
     private javax.swing.JButton btnAlerts;
     private javax.swing.JButton btnCommunity;
@@ -502,6 +574,7 @@ public class UserDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnReportEmergency;
     private javax.swing.JButton btnResources;
     private javax.swing.JButton btnSettings;
+    private javax.swing.JPanel commsTab;
     private javax.swing.JPanel communityTab;
     private javax.swing.JPanel container;
     private javax.swing.JPanel emergencyHubTab;
