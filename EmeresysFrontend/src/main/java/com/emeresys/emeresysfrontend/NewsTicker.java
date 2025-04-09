@@ -7,6 +7,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import com.emeresys.emeresysfrontend.ApiClient;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+
 
 /**
  *
@@ -14,13 +23,13 @@ import java.util.List;
  */
 public class NewsTicker extends JPanel {
     private JLabel tickerLabel;
-    private String text = "Breaking News! DashBoard fully Operational! MapView Loaded Successfully! Alerts feature underway!";
+    private String text = "Loading ALerts ...";
     private int position = 0;
     
     public NewsTicker(){
         tickerLabel = new JLabel(text);
         tickerLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        tickerLabel.setForeground(Color.RED);
+        tickerLabel.setForeground(Color.BLACK);
         
         setLayout(new BorderLayout());
         add(tickerLabel,BorderLayout.CENTER);
@@ -28,6 +37,8 @@ public class NewsTicker extends JPanel {
         //scrolling animation
         Timer timer = new Timer(100, e->scrollText());
         timer.start();
+        
+        new Thread(this::loadAlerts).start();
     }
     
     private void scrollText(){
@@ -38,10 +49,23 @@ public class NewsTicker extends JPanel {
         tickerLabel.setText(text.substring(position)+" "+text.substring(0, position));
     }
     
-    //list to retrieve alerts
-    public List<String> getAlerts(){
+    
+private void loadAlerts(){
+    try {
+
+        ApiClient apiClient = new ApiClient();
         
-        return Arrays.asList(text.split("!"));
+        apiClient.getAlerts();
+      
+
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        text = "Unable to fetch alerts!";
     }
+}
+
+
     
 }
+

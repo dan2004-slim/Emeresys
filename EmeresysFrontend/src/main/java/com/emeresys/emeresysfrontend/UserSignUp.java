@@ -206,7 +206,7 @@ public class UserSignUp extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-         UserLogin UserLoginFrame = new UserLogin();
+         HOMEPAGE UserLoginFrame = new HOMEPAGE();
          UserLoginFrame.setVisible(true);
          UserLoginFrame.pack();
          UserLoginFrame.setLocationRelativeTo(null); //center

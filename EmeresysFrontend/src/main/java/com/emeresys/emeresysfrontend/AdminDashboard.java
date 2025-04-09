@@ -4,11 +4,14 @@
  */
 package com.emeresys.emeresysfrontend;
 import java.awt.CardLayout;
-import com.emeresys.emeresysfrontend.MapViewerUtils;
 import org.openstreetmap.gui.jmapviewer.*;
-import com.emeresys.emeresysfrontend.NewsTicker;
-import javax.swing.*;
+import org.jfree.chart.ChartPanel;
 import java.awt.*;
+import javax.swing.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
+import java.util.Map;
 /**
  *
  * @author USER
@@ -22,7 +25,24 @@ public class AdminDashboard extends javax.swing.JFrame {
         initComponents();
         setupMapView();
         setupAlertsPanel();
+        setupChatClientGUI();
     }
+    
+    private void setupChatClientGUI() {
+    // Create ChatClientGUIv2 instance
+    ChatClientGUIv2 chatClientGUI = new ChatClientGUIv2("Admin");
+
+    // Set the layout of the communications panel if needed
+    communications.setLayout(new BorderLayout());
+
+    // Add the ChatClientGUIv2 to the communications panel
+    communications.add(chatClientGUI, BorderLayout.CENTER);
+
+    // Revalidate and repaint to ensure the panel displays correctly
+    communications.revalidate();
+    communications.repaint();
+}
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -41,33 +61,32 @@ public class AdminDashboard extends javax.swing.JFrame {
         viewpanel = new javax.swing.JPanel();
         dashboard = new javax.swing.JPanel();
         SummaryCards = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jComboBox3 = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        activeResponders = new javax.swing.JTextArea();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        resourcesUsed = new javax.swing.JTextArea();
         alertsPanel = new javax.swing.JPanel();
         mapView = new javax.swing.JPanel();
         communications = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
         statistics = new javax.swing.JPanel();
         chartSelectorPanel = new javax.swing.JPanel();
         btnUsers = new javax.swing.JButton();
-        btnResponders = new javax.swing.JButton();
         btnResources = new javax.swing.JButton();
+        jComboBox2 = new javax.swing.JComboBox<>();
         chartDisplayPanel = new javax.swing.JPanel();
         usersPanel = new javax.swing.JPanel();
-        respondersPanel = new javax.swing.JPanel();
         resourcesPanel = new javax.swing.JPanel();
         options = new javax.swing.JPanel();
         settingsTopNav = new javax.swing.JPanel();
         accountSettings = new javax.swing.JButton();
-        displaySettings = new javax.swing.JButton();
-        about = new javax.swing.JButton();
         settingsView = new javax.swing.JPanel();
         accountPanel = new javax.swing.JPanel();
-        displayPanel = new javax.swing.JPanel();
-        aboutPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("EMERESYS ADMIN");
@@ -135,30 +154,14 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         SummaryCards.setBackground(javax.swing.UIManager.getDefaults().getColor("Menu.background"));
 
-        jPanel1.setBackground(new java.awt.Color(255, 204, 204));
-        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(180, 180, 180), 1, true));
-        jPanel1.setPreferredSize(new java.awt.Dimension(150, 100));
-
-        jLabel1.setText("<html><b>Active<b><br>Disasters: </html>");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
-        );
-
-        SummaryCards.add(jPanel1);
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {  "logged on", "inactive" }));
+        jComboBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox3ActionPerformed(evt);
+            }
+        });
+        SummaryCards.add(jComboBox3);
+        SummaryCards.add(jScrollPane1);
 
         jPanel2.setBackground(new java.awt.Color(255, 204, 204));
         jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(180, 180, 180), 1, true));
@@ -166,21 +169,31 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         jLabel2.setText("<html><b>Responders<b><br>Active: </html>");
 
+        activeResponders.setColumns(20);
+        activeResponders.setRows(5);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(activeResponders, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addContainerGap()
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(activeResponders, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                .addGap(7, 7, 7))
         );
 
         SummaryCards.add(jPanel2);
@@ -191,69 +204,74 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         jLabel3.setText("<html><b>Resources<b><br>Used: </html>");
 
+        resourcesUsed.setColumns(20);
+        resourcesUsed.setRows(5);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(resourcesUsed, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addGap(7, 7, 7)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(resourcesUsed, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         SummaryCards.add(jPanel3);
 
         dashboard.add(SummaryCards, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout alertsPanelLayout = new javax.swing.GroupLayout(alertsPanel);
-        alertsPanel.setLayout(alertsPanelLayout);
-        alertsPanelLayout.setHorizontalGroup(
-            alertsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 717, Short.MAX_VALUE)
-        );
-        alertsPanelLayout.setVerticalGroup(
-            alertsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
+        alertsPanel.setLayout(new java.awt.BorderLayout());
         dashboard.add(alertsPanel, java.awt.BorderLayout.PAGE_END);
 
         mapView.setBackground(new java.awt.Color(204, 204, 204));
-
-        javax.swing.GroupLayout mapViewLayout = new javax.swing.GroupLayout(mapView);
-        mapView.setLayout(mapViewLayout);
-        mapViewLayout.setHorizontalGroup(
-            mapViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 717, Short.MAX_VALUE)
-        );
-        mapViewLayout.setVerticalGroup(
-            mapViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 511, Short.MAX_VALUE)
-        );
-
+        mapView.setLayout(new java.awt.BorderLayout());
         dashboard.add(mapView, java.awt.BorderLayout.CENTER);
 
         viewpanel.add(dashboard, "dashboard");
 
         communications.setBackground(new java.awt.Color(204, 255, 255));
+        communications.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout communicationsLayout = new javax.swing.GroupLayout(communications);
-        communications.setLayout(communicationsLayout);
-        communicationsLayout.setHorizontalGroup(
-            communicationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 717, Short.MAX_VALUE)
         );
-        communicationsLayout.setVerticalGroup(
-            communicationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 721, Short.MAX_VALUE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        communications.add(jPanel1, java.awt.BorderLayout.PAGE_START);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 621, Short.MAX_VALUE)
+        );
+
+        communications.add(jPanel4, java.awt.BorderLayout.LINE_START);
 
         viewpanel.add(communications, "communications");
 
@@ -272,16 +290,6 @@ public class AdminDashboard extends javax.swing.JFrame {
         });
         chartSelectorPanel.add(btnUsers);
 
-        btnResponders.setBackground(new java.awt.Color(204, 255, 204));
-        btnResponders.setText("Responders");
-        btnResponders.setPreferredSize(new java.awt.Dimension(100, 50));
-        btnResponders.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRespondersActionPerformed(evt);
-            }
-        });
-        chartSelectorPanel.add(btnResponders);
-
         btnResources.setBackground(new java.awt.Color(255, 255, 204));
         btnResources.setText("Resources");
         btnResources.setPreferredSize(new java.awt.Dimension(100, 50));
@@ -292,18 +300,23 @@ public class AdminDashboard extends javax.swing.JFrame {
         });
         chartSelectorPanel.add(btnResources);
 
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pie chart", "Bar graph", "Line graph", "Table" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
+        chartSelectorPanel.add(jComboBox2);
+
         statistics.add(chartSelectorPanel, java.awt.BorderLayout.PAGE_START);
 
         chartDisplayPanel.setBackground(new java.awt.Color(204, 204, 255));
         chartDisplayPanel.setLayout(new java.awt.CardLayout());
 
         usersPanel.setBackground(new java.awt.Color(255, 204, 255));
+        //JScrollPane scrollPane = new JScrollPane(usersPanel);
         usersPanel.setLayout(new javax.swing.BoxLayout(usersPanel, javax.swing.BoxLayout.LINE_AXIS));
         chartDisplayPanel.add(usersPanel, "usersPanel");
-
-        respondersPanel.setBackground(new java.awt.Color(204, 255, 204));
-        respondersPanel.setLayout(new javax.swing.BoxLayout(respondersPanel, javax.swing.BoxLayout.LINE_AXIS));
-        chartDisplayPanel.add(respondersPanel, "respondersPanel");
 
         resourcesPanel.setBackground(new java.awt.Color(255, 255, 204));
         resourcesPanel.setLayout(new javax.swing.BoxLayout(resourcesPanel, javax.swing.BoxLayout.LINE_AXIS));
@@ -320,18 +333,14 @@ public class AdminDashboard extends javax.swing.JFrame {
         settingsTopNav.setPreferredSize(new java.awt.Dimension(700, 50));
 
         accountSettings.setBackground(new java.awt.Color(204, 204, 255));
-        accountSettings.setText("Account");
+        accountSettings.setText("Account Settings");
         accountSettings.setPreferredSize(new java.awt.Dimension(100, 50));
+        accountSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accountSettingsActionPerformed(evt);
+            }
+        });
         settingsTopNav.add(accountSettings);
-
-        displaySettings.setBackground(new java.awt.Color(204, 255, 204));
-        displaySettings.setText("Display");
-        displaySettings.setPreferredSize(new java.awt.Dimension(100, 50));
-        settingsTopNav.add(displaySettings);
-
-        about.setText("About");
-        about.setPreferredSize(new java.awt.Dimension(100, 50));
-        settingsTopNav.add(about);
 
         options.add(settingsTopNav, java.awt.BorderLayout.PAGE_START);
 
@@ -353,36 +362,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         settingsView.add(accountPanel, "card2");
 
-        displayPanel.setBackground(new java.awt.Color(204, 255, 204));
-
-        javax.swing.GroupLayout displayPanelLayout = new javax.swing.GroupLayout(displayPanel);
-        displayPanel.setLayout(displayPanelLayout);
-        displayPanelLayout.setHorizontalGroup(
-            displayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 717, Short.MAX_VALUE)
-        );
-        displayPanelLayout.setVerticalGroup(
-            displayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 671, Short.MAX_VALUE)
-        );
-
-        settingsView.add(displayPanel, "card3");
-
-        aboutPanel.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout aboutPanelLayout = new javax.swing.GroupLayout(aboutPanel);
-        aboutPanel.setLayout(aboutPanelLayout);
-        aboutPanelLayout.setHorizontalGroup(
-            aboutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 717, Short.MAX_VALUE)
-        );
-        aboutPanelLayout.setVerticalGroup(
-            aboutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 671, Short.MAX_VALUE)
-        );
-
-        settingsView.add(aboutPanel, "card4");
-
         options.add(settingsView, java.awt.BorderLayout.CENTER);
 
         viewpanel.add(options, "options");
@@ -391,8 +370,7 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    
+
     public void setupAlertsPanel(){
         // create the news ticker instance
         NewsTicker ticker = new NewsTicker();
@@ -410,13 +388,65 @@ public class AdminDashboard extends javax.swing.JFrame {
         JMapViewer mapViewer = MapViewerUtils.initializeMapViewer(12);
         
         
+        // Define ping listener
+    PingListener listener = (location, priority) -> {
+        double latitude = Double.parseDouble(location.split(",")[0]);
+        double longitude = Double.parseDouble(location.split(",")[1]);
+        MapMarkerDot marker = new MapMarkerDot(new Coordinate(latitude, longitude));
+        
+        // Color marker based on priority
+        switch (priority) {
+            case "red": marker.getStyle().setColor(Color.RED); break;
+            case "orange": marker.getStyle().setColor(Color.ORANGE); break;
+            case "yellow": marker.getStyle().setColor(Color.YELLOW); break;
+            default: marker.getStyle().setColor(Color.GRAY); break;
+        }
+        mapViewer.addMapMarker(marker);
+        mapViewer.repaint();
+    };
+
+    // Initialize LocationPingManager with listener
+    LocationPingManager pingManager = new LocationPingManager("localhost", 9090, listener);
+
+    // Simulate Bynamic Location
+    String currentLocation = getCurrentLocation(); // Fetch real-time location
+pingManager.pingLocation(currentLocation, "highpriority");
+
+        
+
+        MapViewerUtils.addRedPing(mapViewer, new Coordinate(0.3224, 37.6525)); // Meru
+    MapViewerUtils.addRedPing(mapViewer, new Coordinate(-1.2864, 36.8172)); // Nairobi
+    MapViewerUtils.addRedPing(mapViewer, new Coordinate(0.4708, 36.9585)); // Embu
         mapView.setLayout(new java.awt.BorderLayout());
         mapView.add(mapViewer, java.awt.BorderLayout.CENTER);
         
         mapView.revalidate();
         mapView.repaint();
+        
+        javax.swing.Timer timer = new javax.swing.Timer(30000, e -> {
+    pingManager.pingLocation("34.0522,-118.2437", "highpriority"); // Example: Los Angeles
+});
+timer.start();
+
     }
-    
+    public String getCurrentLocation() {
+    try {
+        // Fetch location from the backend
+        String response = ApiClient.getUserLocation(/*userId*/ 1L); // Example userId
+        System.out.println("Backend Location: " + response);
+        
+        
+        System.out.println("Backend Location Response: " + response);
+        return response;
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.err.println("Failed to fetch location: " + e.getMessage());
+        return "0.0,0.0"; // Return a fallback location
+       
+
+    }
+}
+
     
     
     
@@ -443,29 +473,213 @@ public class AdminDashboard extends javax.swing.JFrame {
 
     private void optionsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionsButtonActionPerformed
         // TODO add your handling code here:
-        CardLayout cl = (CardLayout) viewpanel.getLayout();
-        cl.show(viewpanel, "options");
+    // Remove existing content in settingsView
+    settingsView.removeAll();
+
+    // Create and add the SettingPanel to settingsView
+    SettingPanel settingPanel = new SettingPanel();
+    settingsView.setLayout(new BorderLayout());
+    settingsView.add(settingPanel, BorderLayout.CENTER);
+
+    // Refresh the panel
+    settingsView.revalidate();
+    settingsView.repaint();
+
+    // Show the options panel
+    CardLayout layout = (CardLayout) viewpanel.getLayout();
+    layout.show(viewpanel, "options");
     }//GEN-LAST:event_optionsButtonActionPerformed
 
     private void btnUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsersActionPerformed
         // TODO add your handling code here:
-        CardLayout cl = (CardLayout) chartDisplayPanel.getLayout();
-        cl.show(chartDisplayPanel, "usersPanel");
-        
-        
+              
+    // Switch to Users panel
+    CardLayout cl = (CardLayout) chartDisplayPanel.getLayout();
+    cl.show(chartDisplayPanel, "usersPanel");
+
+    // Generate default Users Pie Chart
+    ChartPanel userPieChart = ChartUtils.createUserRolePieChart("User Data");
+
+    // Update usersPanel
+    usersPanel.removeAll();
+    usersPanel.setLayout(new BorderLayout());
+    usersPanel.add(userPieChart, BorderLayout.CENTER);
+    usersPanel.revalidate();
+    usersPanel.repaint();
+
+
+
     }//GEN-LAST:event_btnUsersActionPerformed
 
-    private void btnRespondersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRespondersActionPerformed
-        // TODO add your handling code here:
-           CardLayout cl = (CardLayout) chartDisplayPanel.getLayout();
-            cl.show(chartDisplayPanel, "respondersPanel");
-    }//GEN-LAST:event_btnRespondersActionPerformed
-
     private void btnResourcesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResourcesActionPerformed
-        // TODO add your handling code here:
-           CardLayout cl = (CardLayout) chartDisplayPanel.getLayout();
-            cl.show(chartDisplayPanel, "resourcesPanel");
+                                       
+    // Switch to usersPanel inside chartDisplayPanel
+    CardLayout cl = (CardLayout) chartDisplayPanel.getLayout();
+    cl.show(chartDisplayPanel, "usersPanel");
+
+    // Create Pie Chart for Resources
+    String[] resourceCategories = {"Available Resources", "Used Resources", "New Resources"};
+    int[] resourceValues = {60, 20, 20}; 
+    ChartPanel resourceChartPanel = ChartUtils.createResourceTypePieChart("Resource Distribution");
+
+    // Ensure Resources chart is displayed within usersPanel
+    usersPanel.removeAll();
+    usersPanel.setLayout(new BorderLayout()); // Adapting to your layout structure
+    usersPanel.add(resourceChartPanel, BorderLayout.CENTER);
+    
+    usersPanel.revalidate();
+    usersPanel.repaint();
+
+
     }//GEN-LAST:event_btnResourcesActionPerformed
+
+    private void accountSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accountSettingsActionPerformed
+        
+        
+        
+    }//GEN-LAST:event_accountSettingsActionPerformed
+
+    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField4ActionPerformed
+
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void aboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutActionPerformed
+        // TODO add your handling code here:
+          CardLayout cardLayout = (CardLayout) settingsView.getLayout();
+        cardLayout.show(settingsView, "aboutPanel");
+        
+    }//GEN-LAST:event_aboutActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here
+        
+    // Get the selected chart type
+    String selectedChartType = (String) jComboBox2.getSelectedItem();
+System.out.println("Selected chart type: " + selectedChartType);
+    // Switch to the Users panel
+    CardLayout cl = (CardLayout) chartDisplayPanel.getLayout();
+    
+    cl.show(chartDisplayPanel, "usersPanel");
+
+    // Clear existing content in usersPanel
+    usersPanel.removeAll();
+
+    // Generate and display the selected chart or table
+    ChartPanel chartPanel = null;
+    JScrollPane tablePanel = null;
+
+    switch (selectedChartType) {
+        case "Pie chart":
+            chartPanel = ChartUtils.createUserRolePieChart("User Data");
+            break;
+
+        case "Bar graph":
+            chartPanel = ChartUtils.createUserRoleBarGraph("User Stats", "Categories", "Count");
+             
+            break;
+
+        case "Line graph":
+            chartPanel = ChartUtils.createLineChart("User Trends", "Months", "User Count",
+                new String[]{"Jan", "Feb", "Mar"},
+                new int[]{100, 120, 140});
+            break;
+
+        case "Table":
+            tablePanel = ChartUtils.createUsersTable();
+            break;
+
+        default:
+            JLabel errorLabel = new JLabel("Unknown option selected.", SwingConstants.CENTER);
+            usersPanel.add(errorLabel, BorderLayout.CENTER);
+            break;
+    }
+
+    // Add the generated content to usersPanel
+    if (chartPanel != null) {
+        usersPanel.setLayout(new BorderLayout());
+        usersPanel.add(chartPanel, BorderLayout.CENTER);
+    } else if (tablePanel != null) {
+        usersPanel.setLayout(new BorderLayout());
+        usersPanel.add(tablePanel, BorderLayout.CENTER);
+    }
+
+    // Refresh usersPanel
+    usersPanel.revalidate();
+    usersPanel.repaint();
+System.out.println("Selected chart type: " + selectedChartType);
+
+        
+    // Get the selected chart type
+    System.out.println("Selected chart type for Resources: " + selectedChartType);
+
+    // Switch to the Resources panel
+   
+    cl.show(chartDisplayPanel, "resourcesPanel");
+
+    // Clear existing content in resourcesPanel
+    resourcesPanel.removeAll();
+
+    // Generate and display the selected chart or table
+    
+
+    switch (selectedChartType) {
+        case "Pie chart":
+            chartPanel = ChartUtils.createResourcePieChart("Resource Breakdown");
+            break;
+
+        case "Bar graph":
+            chartPanel = ChartUtils.createBarChart("Resource Stats", "Categories", "Count",
+                new String[]{"Available Resources", "Used Resources", "New Resources"},
+                new int[]{60, 20, 20});
+            break;
+
+        case "Line graph":
+            chartPanel = ChartUtils.createLineChart("Resource Trends", "Months", "Resource Count",
+                new String[]{"Jan", "Feb", "Mar"},
+                new int[]{200, 250, 300});
+            break;
+
+        case "Table":
+            tablePanel = ChartUtils.createResourcesTable();
+            break;
+
+        default:
+            JLabel errorLabel = new JLabel("Unknown option selected for Resources.", SwingConstants.CENTER);
+            resourcesPanel.add(errorLabel, BorderLayout.CENTER);
+            break;
+    }
+
+    // Add the generated content to resourcesPanel
+    if (chartPanel != null) {
+        resourcesPanel.setLayout(new BorderLayout());
+        resourcesPanel.add(chartPanel, BorderLayout.CENTER);
+    } else if (tablePanel != null) {
+        resourcesPanel.setLayout(new BorderLayout());
+        resourcesPanel.add(tablePanel, BorderLayout.CENTER);
+    }
+
+    // Refresh resourcesPanel
+    resourcesPanel.revalidate();
+    resourcesPanel.repaint();
+
+
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox3ActionPerformed
 
     
         /**
@@ -507,13 +721,11 @@ public class AdminDashboard extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel SidePane;
     private javax.swing.JPanel SummaryCards;
-    private javax.swing.JButton about;
-    private javax.swing.JPanel aboutPanel;
     private javax.swing.JPanel accountPanel;
     private javax.swing.JButton accountSettings;
+    private javax.swing.JTextArea activeResponders;
     private javax.swing.JPanel alertsPanel;
     private javax.swing.JButton btnResources;
-    private javax.swing.JButton btnResponders;
     private javax.swing.JButton btnUsers;
     private javax.swing.JPanel chartDisplayPanel;
     private javax.swing.JPanel chartSelectorPanel;
@@ -521,19 +733,20 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel communications;
     private javax.swing.JPanel dashboard;
     private javax.swing.JButton dashboardButton;
-    private javax.swing.JPanel displayPanel;
-    private javax.swing.JButton displaySettings;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel mapView;
     private javax.swing.JPanel options;
     private javax.swing.JButton optionsButton;
     private javax.swing.JPanel resourcesPanel;
-    private javax.swing.JPanel respondersPanel;
+    private javax.swing.JTextArea resourcesUsed;
     private javax.swing.JPanel settingsTopNav;
     private javax.swing.JPanel settingsView;
     private javax.swing.JPanel statistics;

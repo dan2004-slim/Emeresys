@@ -232,7 +232,7 @@ public class SignUp extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-         Respodent RespodentFrame = new Respodent();
+         HOMEPAGE RespodentFrame = new HOMEPAGE();
          RespodentFrame.setVisible(true);
          RespodentFrame.pack();
          RespodentFrame.setLocationRelativeTo(null); //center

@@ -4,9 +4,14 @@ import javax.swing.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import java.awt.event.ActionEvent;
+import org.apache.hc.client5.http.fluent.Content;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.client5.http.fluent.Request;
 
 
 public class HOMEPAGE extends javax.swing.JFrame {
+
+    private static final String BASE_URL = "http://localhost:8080";
 
     
     public HOMEPAGE() {
@@ -28,13 +33,7 @@ public class HOMEPAGE extends javax.swing.JFrame {
         passwordField = new javax.swing.JPasswordField();
         loginButton = new javax.swing.JButton();
         signUpButton = new javax.swing.JButton();
-        forgotPassword = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
         Left = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(" Emeresys HomePage");
@@ -67,15 +66,6 @@ public class HOMEPAGE extends javax.swing.JFrame {
 
         signUpButton.setText("SignUp");
 
-        forgotPassword.setText("Forgot Password");
-        forgotPassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                forgotPasswordActionPerformed(evt);
-            }
-        });
-
-        jLabel5.setText("forgot password?");
-
         javax.swing.GroupLayout RightLayout = new javax.swing.GroupLayout(Right);
         Right.setLayout(RightLayout);
         RightLayout.setHorizontalGroup(
@@ -90,17 +80,14 @@ public class HOMEPAGE extends javax.swing.JFrame {
                         .addGroup(RightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(usernameoremail)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel5)
                             .addComponent(loginButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(RightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(forgotPassword, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(RightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(identifierField)
-                                .addComponent(passwordField)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RightLayout.createSequentialGroup()
-                                    .addGap(0, 0, Short.MAX_VALUE)
-                                    .addComponent(signUpButton))))))
+                            .addComponent(identifierField)
+                            .addComponent(passwordField)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RightLayout.createSequentialGroup()
+                                .addGap(0, 46, Short.MAX_VALUE)
+                                .addComponent(signUpButton)))))
                 .addContainerGap(75, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RightLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -124,10 +111,6 @@ public class HOMEPAGE extends javax.swing.JFrame {
                 .addGroup(RightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(loginButton)
                     .addComponent(signUpButton))
-                .addGap(41, 41, 41)
-                .addGroup(RightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(forgotPassword)
-                    .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addGap(26, 26, 26))
@@ -136,66 +119,15 @@ public class HOMEPAGE extends javax.swing.JFrame {
         Left.setBackground(new java.awt.Color(255, 255, 255));
         Left.setPreferredSize(new java.awt.Dimension(400, 500));
 
-        jLabel1.setBackground(new java.awt.Color(50, 205, 50));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(50, 205, 50));
-        jLabel1.setText("Choose account");
-
-        jButton1.setBackground(new java.awt.Color(50, 205, 50));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setText("RESPONDENT");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setBackground(new java.awt.Color(50, 205, 50));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton2.setText("USER");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setBackground(new java.awt.Color(50, 205, 50));
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton3.setText("ADMIN");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout LeftLayout = new javax.swing.GroupLayout(Left);
         Left.setLayout(LeftLayout);
         LeftLayout.setHorizontalGroup(
             LeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(LeftLayout.createSequentialGroup()
-                .addGap(156, 156, 156)
-                .addGroup(LeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(123, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LeftLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(93, 93, 93))
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         LeftLayout.setVerticalGroup(
             LeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(LeftLayout.createSequentialGroup()
-                .addGap(85, 85, 85)
-                .addComponent(jLabel1)
-                .addGap(51, 51, 51)
-                .addComponent(jButton1)
-                .addGap(44, 44, 44)
-                .addComponent(jButton2)
-                .addGap(44, 44, 44)
-                .addComponent(jButton3)
-                .addContainerGap(163, Short.MAX_VALUE))
+            .addGap(0, 500, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -236,42 +168,16 @@ public class HOMEPAGE extends javax.swing.JFrame {
     
     
     
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-         Respodent RespodentFrame = new Respodent();
-         RespodentFrame.setVisible(true);
-         RespodentFrame.pack();
-         RespodentFrame.setLocationRelativeTo(null); //center
-         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-         UserLogin UserLoginFrame = new UserLogin();
-         UserLoginFrame.setVisible(true);
-         UserLoginFrame.pack();
-         UserLoginFrame.setLocationRelativeTo(null); //center
-         this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        AdminDashboard adminDashboard = new AdminDashboard();
-        adminDashboard.setVisible(true);
-        adminDashboard.pack();
-        adminDashboard.setLocationRelativeTo(null);
-        this.dispose();
-        
-    }//GEN-LAST:event_jButton3ActionPerformed
-
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         // TODO add your handling code here:
         
         //retrieve username from textfield
         String identifier = identifierField.getText();
+        char[] passwordChars = passwordField.getPassword();
         
         //retrieve password from password field
-        String password = new String(passwordField.getPassword());
+        String password = new String(passwordChars);
+        java.util.Arrays.fill(passwordChars, ' ');
         
         
         // validate input to ensure neither field is empty
@@ -283,13 +189,16 @@ public class HOMEPAGE extends javax.swing.JFrame {
         
         try{
             // call the ApiClient for login process
-        String response = ApiClient.login(identifier, password);
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, String> responseMap = mapper.readValue(response, Map.class);
+        String userId = ApiClient.login(identifier, password);
         
+        if (userId == null){
+            JOptionPane.showMessageDialog(this, "Login failed. Could not retrieve user ID. Please check credentials.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String role = determineUserRole(userId);
+        String message = "Login Successful";
         //Extract the message and the role
-        String message = responseMap.get("message");
-        String role = responseMap.get("role");
+        
         
         //Handle successful login
         if (message.equals("Login Successful")){
@@ -310,27 +219,23 @@ public class HOMEPAGE extends javax.swing.JFrame {
                     break;
                 case "responder":
                     
-                    ResponderDashboard responderDashboard = new ResponderDashboard();
+                    responderDashboard_1 responderDashboard = new responderDashboard_1();
                     responderDashboard.setVisible(true);
                     
                     break;
                 default:
-                    JOptionPane.showMessageDialog(this, "Unkmown role. Please contact support", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Unknown role. Please contact support", "Error", JOptionPane.ERROR_MESSAGE);
                     break;
             }
             
             
         }
-        //Handles invalid crederntials
-        else if(response.contains("Invalid Username/email or password")){
-            //Show error for failed login
-            JOptionPane.showMessageDialog(this, "Invalid Username/email or password. Please try again ","Error", JOptionPane.ERROR_MESSAGE);
-        }
+       
         
         //Handles other responses
         else {
             
-            JOptionPane.showMessageDialog(this,response, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,message, "Error", JOptionPane.ERROR_MESSAGE);
         }
         
         
@@ -340,17 +245,35 @@ public class HOMEPAGE extends javax.swing.JFrame {
         }catch(Exception e){
             // Handles Backend offline scenario
             JOptionPane.showMessageDialog(this,"Unable to connect to the server. Please check connection and try again ", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         
         
     }//GEN-LAST:event_loginButtonActionPerformed
 
-    private String extractRole(String jsonResponse){
+    private String determineUserRole(String userId){
         try{
-            ObjectMapper mapper = new ObjectMapper();// jackson library for object parsing
-            Map<String, String> responseMap = mapper.readValue(jsonResponse, Map.class);//Convert JSON to map
+            // Make a backend call to fetch user role (e.g., GET /users/{id}/role)
+        String endpoint = BASE_URL + "/users/" + userId + "/role";
+        Content content = Request.get(endpoint)
+                .execute()
+                .returnContent();
+
+        // Parse the backend response to extract the role
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> responseMap = mapper.readValue(content.asString(), Map.class);
+
+        // Retrieve and return the role key
+        String role = responseMap.get("role").toLowerCase();
+        String id = responseMap.get("id"); // Extracting "id"
+String message = responseMap.get("message"); // Extracting "message"
+System.out.println("Role received: " + role);
+System.out.println("ID received: " + id);
+System.out.println("Message received: " + message);
+
+        System.out.println("Role fetched:" + role);
+        return role;
             
-            return responseMap.get("role").toLowerCase(); //Retrieves the role key
         }catch(Exception e){
             e.printStackTrace();
             return "UNKNOWN";//Default to "UKNOWN" if parsing fails
@@ -361,10 +284,6 @@ public class HOMEPAGE extends javax.swing.JFrame {
     
     
     
-    private void forgotPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forgotPasswordActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_forgotPasswordActionPerformed
-
     
     public static void main(String args[]) {
     
@@ -397,15 +316,9 @@ public class HOMEPAGE extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Left;
     private javax.swing.JPanel Right;
-    private javax.swing.JButton forgotPassword;
     private javax.swing.JTextField identifierField;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton loginButton;
     private javax.swing.JPasswordField passwordField;
